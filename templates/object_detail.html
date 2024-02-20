@@ -1,0 +1,6 @@
+<div>
+    <h1>{{ object.name }}</h1>
+    <!-- Add more details here -->
+    <a href="{% url 'update' model_name object.id %}">Update</a>
+    <a href="{% url 'delete' model_name object.id %}">Delete</a>
+</div>

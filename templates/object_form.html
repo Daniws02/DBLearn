@@ -1,0 +1,8 @@
+<div>
+    <h1>{% if update %}Update{% else %}Create{% endif %} {{ model_name|title }}</h1>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">{% if update %}Update{% else %}Create{% endif %}</button>
+    </form>
+</div>
