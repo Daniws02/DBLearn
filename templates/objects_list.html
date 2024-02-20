@@ -1,9 +1,0 @@
-<div>
-    <h1>{{ model_name|title }} List</h1>
-    <ul>
-        {% for object in objects %}
-            <li><a href="{% url 'detail' model_name object.id %}">{{ object.name }}</a></li>
-        {% endfor %}
-    </ul>
-    <a href="{% url 'create' model_name %}">Create New {{ model_name|title }}</a>
-</div>
