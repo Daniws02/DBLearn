@@ -50,11 +50,9 @@ def get_model(model_name):
         return Product
     elif model_name == 'category':
         return Category
-    # Adicione mais modelos conforme necessário
 
 def get_form(model_name):
     if model_name == 'product':
         return ProductForm
     elif model_name == 'category':
         return CategoryForm
-    # Adicione mais formulários conforme necessário
