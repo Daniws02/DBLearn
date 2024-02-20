@@ -1,56 +1,58 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Product
-from .forms import ProductForm
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Product, Category
+from .forms import ProductForm, CategoryForm
 
 # Create your views here.
 
-def list_product(request):
-    products = Product.objects.all()
-    context = {
-        'products': products
-    }
-    return render(request, 'list_product.html' ,context)
+def list(request, model_name):
+    model_class = get_model(model_name)
+    objects = model_class.objects.all()
+    return render(request, 'object_list.html', {'objects': objects, 'model_name': model_name})
 
-def create_product(request):
+def detail(request, model_name, id):
+    model_class = get_model(model_name)
+    object = get_object_or_404(model_class, id=id)
+    return render(request, 'object_detail.html', {'object': object, 'model_name': model_name})
+
+def create(request, model_name):
+    model_class = get_model(model_name)
+    form_class = get_form(model_name)
     if request.method == 'POST':
-        form = ProductForm(request.POST)
+        form = form_class(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('list_product')
+            return redirect('list', model_name=model_name)
     else:
-        form = ProductForm()
-    context = {
-        'form': form
-    }
-    return render(request, 'create_product.html', context)
+        form = form_class()
+    return render(request, 'object_form.html', {'form': form, 'model_name': model_name})
 
-def detail_product(request, id):
-    product = get_object_or_404(Product, id=id)
-    context = {
-        'product': product
-    }
-    return render(request, 'detail_product.html', context)
-
-def update_product(request, id):
-    product = get_object_or_404(Product, id=id)
+def update(request, model_name, id):
+    model_class = get_model(model_name)
+    object = get_object_or_404(model_class, id=id)
+    form_class = get_form(model_name)
     if request.method == 'POST':
-        form = ProductForm(request.POST, instance=product)
+        form = form_class(request.POST, instance=object)
         if form.is_valid():
             form.save()
-            return redirect('list_product')
+            return redirect('list', model_name=model_name)
     else:
-        form = ProductForm(instance=product)
-    context = {
-        'form': form
-    }
-    return render(request, 'update_product.html', context)
+        form = form_class(instance=object)
+    return render(request, 'object_form.html', {'form': form, 'model_name': model_name, 'update': True})
 
-def delete_product(request, id):
-    product = get_object_or_404(Product, id=id)
-    if request.method == 'POST':
-        product.delete()
-        return redirect('list_product')
-    context = {
-        'product' : product
-    }
-    return render(request, 'delete_product.html', context)
+def delete(request, model_name, id):
+    model_class = get_model(model_name)
+    object = get_object_or_404(model_class, id=id)
+    object.delete()
+    return redirect('list', model_name=model_name)
+
+def get_model(model_name):
+    if model_name == 'product':
+        return Product
+    elif model_name == 'category':
+        return Category
+
+def get_form(model_name):
+    if model_name == 'product':
+        return ProductForm
+    elif model_name == 'category':
+        return CategoryForm
